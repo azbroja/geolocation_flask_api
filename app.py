@@ -12,9 +12,6 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = 'andrzej'
 api = Api(app)
 
-
-
-
 jwt = JWT(app, authenticate, identity)
 
 api.add_resource(Item, '/item')
