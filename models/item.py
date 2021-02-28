@@ -1,21 +1,20 @@
 from db import db
 
-
 class ItemModel(db.Model):
     __tablename__ = 'items'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    lon = db.Column(db.Float(precision=2))
-    lat = db.Column(db.Float(precision=2))
+    longitude = db.Column(db.Float(precision=2))
+    latitude = db.Column(db.Float(precision=2))
 
-    def __init__(self, name, lon, lat):
+    def __init__(self, name, longitude, latitude):
         self.name = name
-        self.lon = lon
-        self.lat = lat
+        self.longitude = longitude
+        self.latitude = latitude
 
     def json(self):
-        return {'name': self.name, 'lon': self.lon, 'lat': self.lat}
+        return {'name': self.name, 'longitude': self.longitude, 'latitude': self.latitude}
 
     @classmethod
     def find_by_name(cls, name):

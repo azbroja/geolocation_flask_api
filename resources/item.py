@@ -21,7 +21,8 @@ class Item(Resource):
         if item:
             return item.json()
         return {'message': 'Item not found'}, 404
-
+    
+    @jwt_required()
     def post(self):
         data = Item.parser.parse_args()
         if ItemModel.find_by_name(data['name']):
@@ -31,7 +32,11 @@ class Item(Resource):
         response = requests.get(url)
         response_data = response.json()
 
-        api_data = {"lon": response_data['longitude'], "lat": response_data['latitude']}
+        if response_data['longitude'] == None:
+            return {'message': 'IP or Website address not found, please write a correct data of ip or website address'}, 400
+
+
+        api_data = {"longitude": response_data['longitude'], "latitude": response_data['latitude']}
 
         item = ItemModel(data['name'], **api_data)
 
@@ -42,6 +47,7 @@ class Item(Resource):
 
         return item.json(), 201
 
+    @jwt_required()
     def delete(self):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(data['name'])
@@ -49,14 +55,15 @@ class Item(Resource):
             item.delete_from_db()
             return {'message': 'Item deleted.'}
         return {'message': 'Item not found.'}, 404
-
+    
+    @jwt_required()
     def put(self, name):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(data['name'])
 
         if item:
-            item.lon = data['lon']
-            item.lat = data['lat']
+            item.longitude = data['longitude']
+            item.latitude = data['latitude']
         else:
             item = ItemModel(**data)
 
@@ -66,5 +73,6 @@ class Item(Resource):
 
 
 class ItemList(Resource):
+    @jwt_required()
     def get(self):
         return {'items': list(map(lambda x: x.json(), ItemModel.query.all()))}
