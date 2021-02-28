@@ -12,6 +12,16 @@ class Item(Resource):
                         type=Text,
                         required=True,
                         help="This field cannot be left blank!"
+                        ),
+    parser.add_argument('longitude',
+                        type=float,
+                        required=False,
+                        help="This field cannot be left blank!"
+                        ),
+    parser.add_argument('latitude',
+                        type=float,
+                        required=False,
+                        help="This field cannot be left blank!"
                         )
     
     @jwt_required()
@@ -57,10 +67,10 @@ class Item(Resource):
         return {'message': 'Item not found.'}, 404
     
     @jwt_required()
-    def put(self, name):
+    def put(self):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(data['name'])
-
+        print(data)
         if item:
             item.longitude = data['longitude']
             item.latitude = data['latitude']
